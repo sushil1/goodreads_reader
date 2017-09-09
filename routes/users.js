@@ -1,15 +1,24 @@
-import express, {Router} from 'express'
+import {Router} from 'express'
 import User from '../models/User'
 import parseErrors from '../utils/parseError'
+import {sendConfirmationEmail} from '../mailer'
 
-const router = express.Router()
+const router = new Router()
 
   router.post('/', (req, res) => {
     const {email, password} = req.body.user
     const user = new User({email})
     user.setPassword(password)
-    user.save()
-      .then(userRecord => res.json({user: userRecord.toAuthJSON() }))
+    user.setConfirmationToken()
+    user
+      .save()
+      .then(userRecord => {
+        sendConfirmationEmail(userRecord)
+        res.json({
+          user: userRecord.toAuthJSON()
+        })
+
+      })
       .catch(err => res.status(400).json({errors: parseErrors(err.errors) }))
   })
 

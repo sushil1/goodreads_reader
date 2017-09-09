@@ -17,6 +17,10 @@ const UserSchema = new Schema({
   },
   confirmed: {
     type: Boolean, default:false
+  },
+  confirmationToken: {
+    type:String,
+    default:''
   }
 }, {timestamps:true})
 
@@ -27,7 +31,8 @@ UserSchema.methods.isValidPassword = function isValidPassword(password){
 
 UserSchema.methods.generateJWT = function generateJWT(){
   return jwt.sign({
-    email:this.email
+    email:this.email,
+    confirmed: this.confirmed
   }, process.env.JWT_SECRET)
 }
 
@@ -35,6 +40,9 @@ UserSchema.methods.setPassword = function setPassword(password){
   this.passwordHash = bcrypt.hashSync(password, 10)
 }
 
+UserSchema.methods.setConfirmationToken = function setConfirmationToken(){
+  this.confirmationToken = this.generateJWT()
+}
 
 UserSchema.methods.toAuthJSON = function toAuthJSON(){
   return {
@@ -42,6 +50,10 @@ UserSchema.methods.toAuthJSON = function toAuthJSON(){
     confirmed:this.confirmed,
     token: this.generateJWT()
   }
+}
+
+UserSchema.methods.generateConfirmationUrl = function generateConfirmationUrl(){
+  return `${process.env.HOST}/confirmation/${this.confirmationToken}`
 }
 
 UserSchema.plugin(uniqueValidator, {message: 'This email is already registered'})
