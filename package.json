@@ -7,6 +7,7 @@
     "start": "nodemon --exec babel-node -- index.js"
   },
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
@@ -16,7 +17,9 @@
     "lodash": "^4.17.4",
     "mongoose": "^4.11.10",
     "mongoose-unique-validator": "^1.0.5",
-    "nodemailer": "^4.1.0"
+    "nodemailer": "^4.1.0",
+    "request-promise": "^4.2.2",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

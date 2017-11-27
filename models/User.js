@@ -56,6 +56,18 @@ UserSchema.methods.generateConfirmationUrl = function generateConfirmationUrl(){
   return `${process.env.HOST}/confirmation/${this.confirmationToken}`
 }
 
-UserSchema.plugin(uniqueValidator, {message: 'This email is already registered'})
+UserSchema.methods.generateResetPasswordLink = function generateResetPasswordLink(){
+  return `${process.env.HOST}/reset_password/${this.generateResetPasswordToken()}`
+}
+
+UserSchema.methods.generateResetPasswordToken = function generateResetPasswordToken(){
+  return jwt.sign({
+    _id: this._id
+  }, process.env.JWT_SECRET, {expiresIn: "1h"}
+)
+}
+
+
+UserSchema.plugin(uniqueValidator, {message: 'This {PATH} is already registered'})
 
 export default mongoose.model('User', UserSchema)

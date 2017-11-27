@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import User from '../models/User'
-import parseErrors from '../utils/parseError'
+import parseErrors from '../utils/parseErrors'
 import {sendConfirmationEmail} from '../mailer'
 
 const router = new Router()
@@ -8,6 +8,7 @@ const router = new Router()
   router.post('/', (req, res) => {
     const {email, password} = req.body.user
     const user = new User({email})
+
     user.setPassword(password)
     user.setConfirmationToken()
     user
